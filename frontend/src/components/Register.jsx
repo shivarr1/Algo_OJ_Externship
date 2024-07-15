@@ -17,7 +17,6 @@ const Register = () => {
     try {
       const data = await register(username, email, password);
       console.log('Registration successful', data);
-      // Here you would typically redirect the user to the login page
     } catch (error) {
       setError(error.message);
     }

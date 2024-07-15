@@ -11,7 +11,6 @@ const Login = () => {
     try {
       const data = await login(email, password);
       console.log('Login successful', data);
-      // Here you would typically save the token and redirect the user
     } catch (error) {
       setError(error.message);
     }
