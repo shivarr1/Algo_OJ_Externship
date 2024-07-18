@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-do
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Problems from './components/Problems';
+import ProblemDetail from './components/ProblemDetails';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
@@ -13,7 +14,8 @@ const App = () => {
           <Route path="/login" element={<Auth />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/problems" element={<ProtectedRoute><Problems /></ProtectedRoute>} />
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/problems/:id" element={<ProtectedRoute><ProblemDetail /></ProtectedRoute>} />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
       </div>
     </Router>
