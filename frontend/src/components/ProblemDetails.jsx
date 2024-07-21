@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../services/axiosInstance';
 import Editor from '@monaco-editor/react';
 
 const ProblemDetails = () => {
   const { id } = useParams();
   const [problem, setProblem] = useState(null);
   const [code, setCode] = useState('');
-  const [language, setLanguage] = useState('javascript');
+  const [language, setLanguage] = useState('Python');
   const [output, setOutput] = useState('');
   const navigate = useNavigate();
 
@@ -25,15 +25,13 @@ const ProblemDetails = () => {
 
   const handleRun = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/submissions', {
+      const response = await axios.post('http://localhost:5000/api/submissions/run', {
         problem_id: id,
         language,
-        code
+        code,
       });
-      const submissionId = response.data._id;
-      // Here I will call the compiler API and update the submission with the result
-      // For now, I'll just simulate it
-      setOutput(`Submission created with ID: ${submissionId}`);
+
+      setOutput(`Verdict: ${response.data.verdict}\nOutput: ${response.data.output}`);
     } catch (error) {
       console.error('Error running code:', error);
     }
