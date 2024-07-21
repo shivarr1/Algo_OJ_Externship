@@ -77,4 +77,14 @@ router.post('/run', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/', authenticateToken, async (req, res) => {
+    try {
+      const submissions = await Submission.find().populate('user_id', 'username').populate('problem_id', 'title');
+      res.json(submissions);
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
 module.exports = router;
