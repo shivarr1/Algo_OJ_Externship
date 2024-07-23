@@ -9,6 +9,7 @@ const ProblemDetails = () => {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('Python');
   const [output, setOutput] = useState('');
+  const [userInput, setUserInput] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const ProblemDetails = () => {
         problem_id: id,
         language,
         code,
+        input: userInput,
       });
 
       setOutput(`Verdict: ${response.data.verdict}\nOutput: ${response.data.output}`);
@@ -82,7 +84,7 @@ const ProblemDetails = () => {
           <div className="lg:col-span-1 p-4 bg-white shadow rounded-lg">
             <Editor
               height="60vh"
-              language={language}
+              language={language.toLowerCase()}
               value={code}
               onChange={(value) => setCode(value)}
               options={{
@@ -96,6 +98,16 @@ const ProblemDetails = () => {
                 <option value="python">Python</option>
                 <option value="cpp">C++</option>
               </select>
+            </div>
+            <div className="mt-4">
+              <label className="block mb-2">Input</label>
+              <textarea
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                className="border p-2 rounded w-full"
+                rows="5"
+                placeholder="Enter your input here..."
+              ></textarea>
             </div>
             <button onClick={handleRun} className="mt-4 py-2 px-4 font-medium text-white bg-blue-500 rounded hover:bg-blue-400 transition duration-300">Run</button>
           </div>
