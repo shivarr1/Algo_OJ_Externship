@@ -26,10 +26,10 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Add a new problem(create)
+// Add a new problem (create)
 router.post('/', async (req, res) => {
   try {
-    const { id, title, description, difficulty, tags, sample_input, sample_output, constraints } = req.body;
+    const { id, title, description, difficulty, tags, sample_input, sample_output, constraints, test_inputs, test_outputs } = req.body;
 
     const newProblem = new Problem({
       id,
@@ -39,7 +39,9 @@ router.post('/', async (req, res) => {
       tags,
       sample_input,
       sample_output,
-      constraints
+      constraints,
+      test_inputs,
+      test_outputs
     });
 
     await newProblem.save();
@@ -54,11 +56,11 @@ router.post('/', async (req, res) => {
 // Update a problem by ID
 router.put('/:id', async (req, res) => {
   try {
-    const { title, description, difficulty, tags, sample_input, sample_output, constraints } = req.body;
+    const { title, description, difficulty, tags, sample_input, sample_output, constraints, test_inputs, test_outputs } = req.body;
 
     const updatedProblem = await Problem.findByIdAndUpdate(
       req.params.id,
-      { title, description, difficulty, tags, sample_input, sample_output, constraints },
+      { title, description, difficulty, tags, sample_input, sample_output, constraints, test_inputs, test_outputs },
       { new: true }
     );
 

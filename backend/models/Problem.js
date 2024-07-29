@@ -8,7 +8,9 @@ const problemSchema = new mongoose.Schema({
   tags: { type: [String], required: true },
   sample_input: { type: String, required: true },
   sample_output: { type: String, required: true },
-  constraints: { type: String, required: true }
+  constraints: { type: String, required: true },
+  test_inputs: { type: [String], required: true },  // Array of inputs for test cases
+  test_outputs: { type: [String], required: true }  // Array of expected outputs for test cases
 });
 
 module.exports = mongoose.model('Problem', problemSchema);

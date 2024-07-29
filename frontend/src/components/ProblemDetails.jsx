@@ -10,6 +10,7 @@ const ProblemDetails = () => {
   const [language, setLanguage] = useState('Python');
   const [output, setOutput] = useState('');
   const [userInput, setUserInput] = useState('');
+  const [testResults, setTestResults] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +37,21 @@ const ProblemDetails = () => {
       setOutput(`Verdict: ${response.data.verdict}\nOutput: ${response.data.output}`);
     } catch (error) {
       console.error('Error running code:', error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/submissions/submit', {
+        problem_id: id,
+        language,
+        code,
+      });
+
+      setTestResults(response.data.results);
+      setOutput(response.data.allPassed ? 'All test cases passed!' : 'Some test cases failed.');
+    } catch (error) {
+      console.error('Error submitting code:', error);
     }
   };
 
@@ -110,10 +126,27 @@ const ProblemDetails = () => {
               ></textarea>
             </div>
             <button onClick={handleRun} className="mt-4 py-2 px-4 font-medium text-white bg-blue-500 rounded hover:bg-blue-400 transition duration-300">Run</button>
+            <button onClick={handleSubmit} className="mt-4 py-2 px-4 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300 ml-2">Submit</button>
           </div>
           <div className="lg:col-span-1 p-4 bg-white shadow rounded-lg">
             <h3 className="text-xl font-semibold">Output</h3>
             <pre className="bg-gray-200 p-2 rounded">{output}</pre>
+            {testResults.length > 0 && (
+              <div>
+                <h3 className="text-xl font-semibold mt-4">Test Case Results</h3>
+                {testResults.map((result, index) => (
+                  <div key={index} className="mt-4">
+                    <h4>Test Case {index + 1}</h4>
+                    <p><strong>Input:</strong> {result.input}</p>
+                    <p><strong>Expected Output:</strong> {result.expectedOutput}</p>
+                    <p><strong>Actual Output:</strong> {result.actualOutput}</p>
+                    <p><strong>Verdict:</strong> {result.verdict}</p>
+                    <p><strong>Execution Time:</strong> {result.executionTime} ms</p>
+                    <p><strong>Memory Used:</strong> {result.memoryUsed} KB</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

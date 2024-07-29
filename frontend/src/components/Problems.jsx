@@ -4,7 +4,18 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Problems = () => {
   const [problems, setProblems] = useState([]);
-  const [form, setForm] = useState({ id: '', title: '', description: '', difficulty: '', tags: '', sample_input: '', sample_output: '', constraints: '' });
+  const [form, setForm] = useState({
+    id: '',
+    title: '',
+    description: '',
+    difficulty: '',
+    tags: '',
+    sample_input: '',
+    sample_output: '',
+    constraints: '',
+    test_inputs: '',
+    test_outputs: ''
+  });
   const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
 
@@ -27,13 +38,30 @@ const Problems = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = {
+      ...form,
+      tags: form.tags.split(',').map(tag => tag.trim()),
+      test_inputs: form.test_inputs.split('\n').map(input => input.trim()),
+      test_outputs: form.test_outputs.split('\n').map(output => output.trim())
+    };
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/problems/${editingId}`, form);
+        await axios.put(`http://localhost:5000/api/problems/${editingId}`, formData);
       } else {
-        await axios.post('http://localhost:5000/api/problems', form);
+        await axios.post('http://localhost:5000/api/problems', formData);
       }
-      setForm({ id: '', title: '', description: '', difficulty: '', tags: '', sample_input: '', sample_output: '', constraints: '' });
+      setForm({
+        id: '',
+        title: '',
+        description: '',
+        difficulty: '',
+        tags: '',
+        sample_input: '',
+        sample_output: '',
+        constraints: '',
+        test_inputs: '',
+        test_outputs: ''
+      });
       setEditingId(null);
       const response = await axios.get('http://localhost:5000/api/problems');
       setProblems(response.data);
@@ -43,7 +71,12 @@ const Problems = () => {
   };
 
   const handleEdit = (problem) => {
-    setForm(problem);
+    setForm({
+      ...problem,
+      tags: problem.tags.join(', '),
+      test_inputs: problem.test_inputs.join('\n'),
+      test_outputs: problem.test_outputs.join('\n')
+    });
     setEditingId(problem._id);
   };
 
@@ -100,6 +133,8 @@ const Problems = () => {
             <textarea name="sample_input" value={form.sample_input} onChange={handleChange} placeholder="Sample Input" className="border p-2 rounded" required></textarea>
             <textarea name="sample_output" value={form.sample_output} onChange={handleChange} placeholder="Sample Output" className="border p-2 rounded" required></textarea>
             <textarea name="constraints" value={form.constraints} onChange={handleChange} placeholder="Constraints" className="border p-2 rounded" required></textarea>
+            <textarea name="test_inputs" value={form.test_inputs} onChange={handleChange} placeholder="Test Inputs (one per line)" className="border p-2 rounded" required></textarea>
+            <textarea name="test_outputs" value={form.test_outputs} onChange={handleChange} placeholder="Test Outputs (one per line)" className="border p-2 rounded" required></textarea>
           </div>
           <button type="submit" className="mt-4 py-2 px-4 font-medium text-white bg-blue-500 rounded hover:bg-blue-400 transition duration-300">{editingId ? 'Update' : 'Create'} Problem</button>
         </form>
